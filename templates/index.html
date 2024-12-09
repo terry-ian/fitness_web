@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torin-Web問答網站</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Torin-Web問答網站</h1>
+        <div id="chat-history" class="chat-history"></div>
+        <div id="loading" style="display: none;">
+            <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading..." />
+        </div>
+        <form id="question-form">
+            <label for="question">請輸入你的問題：</label>
+            <textarea id="question" name="question" required rows="4" cols="50"></textarea>
+            <button type="submit">提交</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('question-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('loading').style.display = 'block';
+            const question = document.getElementById('question').value;
+            const chatHistory = document.getElementById('chat-history');
+            
+            // 增加問題到歷史紀錄
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question';
+            questionElement.innerText = '問題：' + question;
+            chatHistory.appendChild(questionElement);
+
+            // 清空輸入框
+            document.getElementById('question').value = '';
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question }),
+            })
+            .then(response => response.json())
+			// 在處理回答的部分
+			.then(data => {
+				document.getElementById('loading').style.display = 'none';
+			
+				// 增加回答到歷史紀錄
+				const answerElement = document.createElement('div');
+				answerElement.className = 'answer';
+				
+				// 將換行符轉換為 <br>
+				const formattedAnswer = data.answer.replace(/\n/g, '<br>');
+				
+				// 使用 innerHTML 插入內容
+				answerElement.innerHTML = '回答：' + formattedAnswer;
+				chatHistory.appendChild(answerElement);
+			
+				// 確保新的內容可見
+				chatHistory.scrollTop = chatHistory.scrollHeight;
+			});
+        });
+
+        document.getElementById('question').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                document.getElementById('question-form').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
