@@ -37,29 +37,24 @@ def ask():
     data = request.get_json()
     question = data.get('question')
 
-    # 使用 Google Gemini API 生成答案
-    answer = generate_answer(question)
+    # 使用流式方法生成回答
+    return Response(generate_answer_stream(question), content_type='text/event-stream')
 
-    return jsonify({'answer': answer})
+def generate_answer_stream(question):
+    # 使用 Gemini API 流式生成答案
+    for response in chat.send_message(question, stream=True):
+        part = response.get('text', '').replace('**', '').replace('*', '-')
 
+        # 格式化 HTML
+        if '```' in part or 'def ' in part or 'class ' in part or 'import ' in part:
+            part = part.replace('```python', '<pre><code class="python">').replace('```', '</code></pre>')
+        elif '    ' in part or '\t' in part:
+            part = f'<pre><code>{part}</code></pre>'
+        else:
+            part = f'<pre><code>{part}</code></pre>'
 
-def generate_answer(question):
-    # 使用 Google Gemini API 來生成答案
-    response = chat.send_message(question)
-
-    # 假設回答中包含程式碼，使用適當的 HTML 包裹代碼塊
-    answer_text = response.text.replace('**', '').replace('*', '-')
-
-    # 判斷是否包含程式碼塊標記或常見的程式碼特徵
-    if '```' in answer_text or 'def ' in answer_text or 'class ' in answer_text or 'import ' in answer_text:
-        answer_text = answer_text.replace('```python', '<pre><code class="python">').replace('```', '</code></pre>')
-    elif '    ' in answer_text or '\t' in answer_text:  # 檢查是否有縮排
-        answer_text = f'<pre><code>{answer_text}</code></pre>'
-    else:
-        # 如果沒有明顯的程式碼特徵，但希望統一格式，仍然包裹代碼以防範例外
-        answer_text = f'<pre><code>{answer_text}</code></pre>'
-    
-    return answer_text
+        # 使用 Server-Sent Events 傳輸數據
+        yield f"data: {part}\n\n"
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
