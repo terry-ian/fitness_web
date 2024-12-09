@@ -10,9 +10,6 @@
     <div class="container">
         <h1>Torin-Web問答網站</h1>
         <div id="chat-history" class="chat-history"></div>
-        <div id="loading" style="display: none;">
-            <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading...">
-        </div>
         <form id="question-form">
             <label for="question">請輸入你的問題：</label>
             <textarea id="question" name="question" required rows="4" cols="50"></textarea>
@@ -24,7 +21,6 @@
             event.preventDefault();
             const question = document.getElementById('question').value;
             const chatHistory = document.getElementById('chat-history');
-            document.getElementById('loading').style.display = 'block';
 
             // 增加問題到歷史紀錄
             const questionElement = document.createElement('div');
@@ -49,7 +45,6 @@
                 function readStream() {
                     return reader.read().then(({ done, value }) => {
                         if (done) {
-                            document.getElementById('loading').style.display = 'none';
                             return;
                         }
 
@@ -78,6 +73,13 @@
                 }
 
                 return readStream();
+            })
+            .catch(error => {
+                console.error('發生錯誤：', error);
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error';
+                errorElement.innerText = '無法取得回應，請稍後再試。';
+                chatHistory.appendChild(errorElement);
             });
         });
 
