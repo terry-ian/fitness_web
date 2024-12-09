@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, Response
-import genai
+import google.generativeai as genai
 
 # 設定 API 金鑰
 gemini_key = os.getenv('gemini_key')
