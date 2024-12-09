@@ -20,11 +20,13 @@ body {
     display: flex;
     flex-direction: column;
     height: 90vh;
+    max-height: 100vh;
+    overflow: hidden;
 }
 
 h1 {
-    font-size: 12px; /* 調整為你需要的字體大小，例如 24px */
-    margin-bottom: 5px; /* 調整標題下方的間距 */
+    font-size: 16px;
+    margin-bottom: 5px;
 }
 
 form {
@@ -53,10 +55,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-#loading {
-    margin: 10px 0;
-}
-
 .chat-history {
     text-align: left;
     flex-grow: 1;
@@ -66,6 +64,8 @@ button:hover {
     border-radius: 4px;
     margin-bottom: 20px;
     background-color: #f9f9f9;
+    max-height: 100%;
+    min-height: 200px;
 }
 
 .question {
@@ -73,17 +73,19 @@ button:hover {
     margin-bottom: 10px;
 }
 
-
 .answer {
-	color: green;
-    white-space: pre-wrap; /* 保留空白和換行 */
-    word-wrap: break-word; /* 自動換行，防止內容過長導致跑版 */
+    color: green;
+    white-space: pre-wrap;
+    word-wrap: break-word;
     margin: 10px 0;
+    line-height: 1.5;
+    padding: 5px 10px;
+    background-color: #e6ffe6;
+    border-radius: 4px;
 }
 
-
 .code-container {
-    background-color: #2d2d2d; /* 背景設為深色 */
+    background-color: #2d2d2d;
     padding: 20px;
     border-radius: 8px;
     margin: 20px 0;
@@ -91,10 +93,10 @@ button:hover {
 
 pre {
     margin: 0;
-    font-family: Consolas, 'Courier New', monospace; /* 設置代碼字體 */
-    color: #ffffff; /* 代碼文字顏色設為白色 */
+    font-family: Consolas, 'Courier New', monospace;
+    color: #ffffff;
     font-size: 14px;
-    white-space: pre-wrap; /* 保留空白和換行 */
+    white-space: pre-wrap;
 }
 
 code {
@@ -102,9 +104,9 @@ code {
     background-color: #2d2d2d;
     padding: 10px;
     border-radius: 4px;
-    overflow-x: auto; /* 讓代碼塊橫向滾動而不是跑版 */
+    overflow-x: auto;
 }
 
 .python {
-    color: #ffcc00; /* 可以針對 Python 語法高亮進行進一步設置 */
+    color: #ffcc00;
 }
