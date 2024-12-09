@@ -48,21 +48,23 @@
                             return;
                         }
 
-                        // 解析數據塊
+                        // 解碼流數據並解析
                         text += decoder.decode(value, { stream: true });
                         const lines = text.split('\n');
                         lines.forEach(line => {
                             if (line.startsWith('data: ')) {
                                 const content = line.replace('data: ', '').trim();
 
-                                // 增加回答到歷史紀錄
-                                const answerElement = document.createElement('div');
-                                answerElement.className = 'answer';
-                                answerElement.innerHTML = content;
-                                chatHistory.appendChild(answerElement);
+                                // 檢查內容是否非空，然後將回答顯示出來
+                                if (content) {
+                                    const answerElement = document.createElement('div');
+                                    answerElement.className = 'answer';
+                                    answerElement.innerHTML = content;
+                                    chatHistory.appendChild(answerElement);
 
-                                // 滾動到底部
-                                chatHistory.scrollTop = chatHistory.scrollHeight;
+                                    // 滾動到底部
+                                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                                }
                             }
                         });
 
